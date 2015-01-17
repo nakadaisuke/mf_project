@@ -31,6 +31,9 @@ class out_link_parser(HTMLParser):
             if attrs_length != 0:
                 if "date" in attrs[0] or "date form-switch-td" in attrs[0]:
                     if self.active_flag == "active":
+                        date_data = attrs[1][1]
+                        str_data = re.sub('^[ \n\r\t]+|[ \n\r\t]+$', '', date_data).encode('utf-8') + ','
+                        self.DATALIST.append(str_data)
                         self.record = "date"
                 if "content" in attrs[0] or "content form-switch-td" in attrs[0]:
                     if self.active_flag == "active" and "" not in attrs:
@@ -82,8 +85,6 @@ class out_link_parser(HTMLParser):
 
 
 input_argvs = sys.argv
-print input_argvs[1]
-print input_argvs[2]
 
 url = open(input_argvs[1], "r")
 csvfile = codecs.open(input_argvs[2], "w", "shift-jis")
