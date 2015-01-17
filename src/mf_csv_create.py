@@ -59,7 +59,7 @@ class out_link_parser(HTMLParser):
                 str_data = re.sub('^[ \n\r\t]+|[ \n\r\t]+$', '', data).encode('utf-8') + ','
                 self.DATALIST.append(str_data)
             elif self.record == "content":
-                str_data = re.sub('^[ \n\r\t]+|[ \n\r\t]+$', '', data).encode('utf-8') + ','
+                str_data = re.sub('^[ \n\r\t]+|[ \n\r\t]+$', '', data).encode('utf-8').replace(",",".") + ','
                 self.DATALIST.append(str_data)
             elif self.record == "price":
                 str_data = re.sub('^[ \n\r\t]+|[ \n\r\t]+$', '', data).encode('utf-8').replace(",","") + ','
