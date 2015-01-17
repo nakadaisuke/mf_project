@@ -95,6 +95,7 @@ for i in parser.CSVLIST:
     for csvi in i:
         u_seci = unicode(csvi,"utf-8").replace(u"\u2014", u"\u2015")
         u_seci = u_seci.replace(u"\u309a", "")
+        u_seci = u_seci.replace(u"\u9ad9", u"\u9ad8")
         csvfile.write(u_seci)
 
 
