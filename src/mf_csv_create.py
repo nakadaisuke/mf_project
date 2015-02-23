@@ -5,7 +5,6 @@ import re
 from HTMLParser import HTMLParser
 import codecs
 import sys
-import unicodedata
 
 class out_link_parser(HTMLParser):
     def __init__(self):
@@ -38,7 +37,7 @@ class out_link_parser(HTMLParser):
                 if "content" in attrs[0] or "content form-switch-td" in attrs[0]:
                     if self.active_flag == "active" and "" not in attrs:
                         self.record = "content"
-                if "amount number plus-color" in attrs[0] or "amount minus-color number" in attrs[0] or "amount form-switch-td plus-color number" in attrs[0] or "amount form-switch-td minus-color number" in attrs[0]:
+                if "amount number plus-color" in attrs[0] or "amount minus-color number" in attrs[0] or "amount form-switch-td plus-color number" in attrs[0] or "amount form-switch-td minus-color number" in attrs[0] or "amount form-switch-td number plus-color" in attrs[0]:
                     if self.active_flag == "active":
                         self.record = "price"
                 if "lctg" in attrs[0]:
@@ -83,23 +82,26 @@ class out_link_parser(HTMLParser):
         self.DATALIST = []
         self.record = ""
 
+def main(argvs):
+    # input html file and export csv file
+    url = open(argvs[1], "r")
+    csvfile = codecs.open(argvs[2], "w", "shift-jis")
+    html = url.read()
 
-input_argvs = sys.argv
+    # Parse imput html
+    parser = out_link_parser()
+    parser.feed(html.replace('&amp;','').decode('utf-8'))
 
-url = open(input_argvs[1], "r")
-csvfile = codecs.open(input_argvs[2], "w", "shift-jis")
-html = url.read()
-parser = out_link_parser()
-parser.feed(html.decode('utf-8'))
+    for i in parser.CSVLIST:
+        for csvi in i:
+            u_seci = unicode(csvi,"utf-8").replace(u"\u2014", u"\u2015")
+            u_seci = u_seci.replace(u"\u309a", "")
+            u_seci = u_seci.replace(u"\u9ad9", u"\u9ad8")
+            csvfile.write(u_seci)
 
-for i in parser.CSVLIST:
-    for csvi in i:
-        u_seci = unicode(csvi,"utf-8").replace(u"\u2014", u"\u2015")
-        u_seci = u_seci.replace(u"\u309a", "")
-        u_seci = u_seci.replace(u"\u9ad9", u"\u9ad8")
-        csvfile.write(u_seci)
+    csvfile.close()
+    url.close()
+    parser.clean()
 
-
-csvfile.close()
-url.close()
-parser.clean()
+if __name__ == "__main__":
+    main(sys.argv)
